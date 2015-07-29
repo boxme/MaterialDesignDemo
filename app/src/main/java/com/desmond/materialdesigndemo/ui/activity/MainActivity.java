@@ -1,5 +1,6 @@
 package com.desmond.materialdesigndemo.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -16,7 +17,7 @@ import com.desmond.materialdesigndemo.R;
 import com.desmond.materialdesigndemo.ui.Utils;
 import com.desmond.materialdesigndemo.ui.adapter.FeedAdapter;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements FeedAdapter.OnFeedItemClickListener {
 
     public static final String ACTION_SHOW_LOADING_ITEM = "action_show_loading_item";
 
@@ -46,7 +47,7 @@ public class MainActivity extends BaseActivity {
         if (savedInstanceState == null) {
             mPendingIntroAnimation = true;
         } else {
-
+            mFeedAdapter.updateItems();
         }
     }
 
@@ -78,7 +79,22 @@ public class MainActivity extends BaseActivity {
         mRvFeed.setLayoutManager(linearLayoutManager);
 
         mFeedAdapter = new FeedAdapter();
+        mFeedAdapter.setOnFeedItemClickListener(this);
         mRvFeed.setAdapter(mFeedAdapter);
+    }
+
+    @Override
+    public void onCommentsClick(View view, int position) {
+        final Intent intent = new Intent(this, CommentsActivity.class);
+
+        // Get location on screen for tapped view
+        int[] startingLocation = new int[2];
+        view.getLocationOnScreen(startingLocation);
+        intent.putExtra(CommentsActivity.ARG_DRAWING_START_LOCATION, startingLocation[1]);
+
+        startActivity(intent);
+        // Disable enter transition for new Activity and exit animation for MainActivity
+        overridePendingTransition(0, 0);
     }
 
     private void startIntroAnimation() {

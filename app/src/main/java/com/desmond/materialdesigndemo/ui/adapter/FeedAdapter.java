@@ -15,13 +15,19 @@ import com.desmond.materialdesigndemo.ui.view.SquareImageView;
 /**
  * Created by desmond on 29/7/15.
  */
-public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+        implements View.OnClickListener {
 
     private static final int ANIMATED_ITEMS_COUNT = 2;
 
     private int mLastAnimatedPosition = -1;
     private int mItemsCount = 0;
 
+    private OnFeedItemClickListener mOnFeedItemClickListener;
+
+    public interface OnFeedItemClickListener {
+        void onCommentsClick(View view, int position);
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -41,6 +47,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holder.ivFeedCenter.setImageResource(R.drawable.img_feed_center_2);
             holder.ivFeedBottom.setImageResource(R.drawable.img_feed_bottom_2);
         }
+
+        holder.ivFeedBottom.setOnClickListener(this);
+        holder.ivFeedBottom.setTag(position);
     }
 
     private void runEnterAnimation(View view, int position) {
@@ -67,6 +76,19 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void updateItems() {
         mItemsCount = 10;
         notifyDataSetChanged();
+    }
+
+    public void setOnFeedItemClickListener(OnFeedItemClickListener onFeedItemClickListener) {
+        mOnFeedItemClickListener = onFeedItemClickListener;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.ivFeedBottom) {
+            if (mOnFeedItemClickListener != null) {
+                mOnFeedItemClickListener.onCommentsClick(v, (Integer) v.getTag());
+            }
+        }
     }
 
     public static class CellFeedViewHolder extends RecyclerView.ViewHolder {

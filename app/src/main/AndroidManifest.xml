@@ -20,6 +20,11 @@
             android:name=".ui.activity.BaseActivity"
             android:label="@string/title_activity_base" >
         </activity>
+        <activity
+            android:name=".ui.activity.CommentsActivity"
+            android:label="@string/title_activity_comments"
+            android:theme="@style/AppTheme.CommentsActivity">
+        </activity>
     </application>
 
 </manifest>

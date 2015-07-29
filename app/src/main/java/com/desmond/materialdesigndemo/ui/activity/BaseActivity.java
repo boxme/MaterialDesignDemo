@@ -1,7 +1,6 @@
 package com.desmond.materialdesigndemo.ui.activity;
 
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +31,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void setupToolbar() {
         if (mToolBar == null) {
             mToolBar = (Toolbar) findViewById(R.id.toolbar);
+            mIvLogo = (ImageView) findViewById(R.id.ivLogo);
         }
         setSupportActionBar(mToolBar);
         mToolBar.setNavigationIcon(R.drawable.ic_menu_white);
