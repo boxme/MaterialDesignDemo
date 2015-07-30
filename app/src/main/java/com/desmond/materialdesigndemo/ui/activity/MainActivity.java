@@ -71,6 +71,7 @@ public class MainActivity extends BaseActivity implements FeedAdapter.OnFeedItem
     private void setupFeed() {
         mRvFeed = (RecyclerView) findViewById(R.id.rvFeed);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this) {
+            // Increase the amount of extra space that should be laid out by LayoutManager ahead
             @Override
             protected int getExtraLayoutSpace(RecyclerView.State state) {
                 return 300;
@@ -95,6 +96,16 @@ public class MainActivity extends BaseActivity implements FeedAdapter.OnFeedItem
         startActivity(intent);
         // Disable enter transition for new Activity and exit animation for MainActivity
         overridePendingTransition(0, 0);
+    }
+
+    @Override
+    public void onMoreClick(View view, int position) {
+        // TODO
+    }
+
+    @Override
+    public void onProfileClick(View view) {
+        // TODO
     }
 
     private void startIntroAnimation() {

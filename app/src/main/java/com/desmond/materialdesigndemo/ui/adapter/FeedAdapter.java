@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.desmond.materialdesigndemo.R;
@@ -27,12 +28,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public interface OnFeedItemClickListener {
         void onCommentsClick(View view, int position);
+        void onMoreClick(View view, int position);
+        void onProfileClick(View view);
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_feed, parent, false);
-        return new CellFeedViewHolder(view);
+        final CellFeedViewHolder holder = new CellFeedViewHolder(view);
+        holder.btnComments.setOnClickListener(this);
+        holder.btnLike.setOnClickListener(this);
+        holder.ivFeedCenter.setOnClickListener(this);
+        return holder;
     }
 
     @Override
@@ -40,16 +47,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         runEnterAnimation(viewHolder.itemView, position);
 
         CellFeedViewHolder holder = (CellFeedViewHolder) viewHolder;
-        if (position % 2 == 0) {
-            holder.ivFeedCenter.setImageResource(R.drawable.img_feed_center_1);
-            holder.ivFeedBottom.setImageResource(R.drawable.img_feed_bottom_1);
-        } else {
-            holder.ivFeedCenter.setImageResource(R.drawable.img_feed_center_2);
-            holder.ivFeedBottom.setImageResource(R.drawable.img_feed_bottom_2);
-        }
-
-        holder.ivFeedBottom.setOnClickListener(this);
-        holder.ivFeedBottom.setTag(position);
+        bindDefaultFeedItem(position, holder);
     }
 
     private void runEnterAnimation(View view, int position) {
@@ -68,6 +66,20 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    private void bindDefaultFeedItem(int position, CellFeedViewHolder holder) {
+        if (position % 2 == 0) {
+            holder.ivFeedCenter.setImageResource(R.drawable.img_feed_center_1);
+            holder.ivFeedBottom.setImageResource(R.drawable.img_feed_bottom_1);
+        } else {
+            holder.ivFeedCenter.setImageResource(R.drawable.img_feed_center_2);
+            holder.ivFeedBottom.setImageResource(R.drawable.img_feed_bottom_2);
+        }
+
+        holder.btnComments.setTag(position);
+        holder.ivFeedCenter.setTag(holder);
+        holder.btnLike.setTag(holder);
+    }
+
     @Override
     public int getItemCount() {
         return mItemsCount;
@@ -84,9 +96,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.ivFeedBottom) {
-            if (mOnFeedItemClickListener != null) {
-                mOnFeedItemClickListener.onCommentsClick(v, (Integer) v.getTag());
+        final int viewId = v.getId();
+        switch (viewId) {
+            case R.id.btnComments: {
+                if (mOnFeedItemClickListener != null) {
+                    mOnFeedItemClickListener.onCommentsClick(v, (Integer) v.getTag());
+                }
+                break;
+            }
+            case R.id.btnLike: {
+                break;
             }
         }
     }
@@ -94,11 +113,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public static class CellFeedViewHolder extends RecyclerView.ViewHolder {
         SquareImageView ivFeedCenter;
         ImageView ivFeedBottom;
+        ImageButton btnComments;
+        ImageButton btnLike;
 
         public CellFeedViewHolder(View view) {
             super(view);
             ivFeedCenter = (SquareImageView) view.findViewById(R.id.ivFeedCenter);
             ivFeedBottom = (ImageView) view.findViewById(R.id.ivFeedBottom);
+            btnComments = (ImageButton) view.findViewById(R.id.btnComments);
+            btnLike = (ImageButton) view.findViewById(R.id.btnLike);
         }
     }
 }

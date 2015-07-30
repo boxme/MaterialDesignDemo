@@ -5,9 +5,11 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -83,14 +85,16 @@ public class CommentsActivity extends BaseActivity implements SendCommentButton.
 
     @Override
     public void onSendClickListener(View v) {
-        mCommentsAdapter.addItem();
-        mCommentsAdapter.setAnimationsLocked(false);
-        mCommentsAdapter.setDelayEnterAnimation(false);
-        mRvComment.smoothScrollBy(
-                0, mRvComment.getChildAt(0).getHeight() * mCommentsAdapter.getItemCount());
+        if (validateComment()) {
+            mCommentsAdapter.addItem();
+            mCommentsAdapter.setAnimationsLocked(false);
+            mCommentsAdapter.setDelayEnterAnimation(false);
+            mRvComment.smoothScrollBy(
+                    0, mRvComment.getChildAt(0).getHeight() * mCommentsAdapter.getItemCount());
 
-        mEtComment.setText(null);
-        mBtnSendComment.setCurrentState(SendCommentButton.STATE_DONE);
+            mEtComment.setText(null);
+            mBtnSendComment.setCurrentState(SendCommentButton.STATE_DONE);
+        }
     }
 
     private void startIntroAnimation() {
@@ -117,6 +121,15 @@ public class CommentsActivity extends BaseActivity implements SendCommentButton.
                 .setInterpolator(new DecelerateInterpolator())
                 .setDuration(200)
                 .start();
+    }
+
+    private boolean validateComment() {
+        if (TextUtils.isEmpty(mEtComment.getText())) {
+            mBtnSendComment.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake_error));
+            return false;
+        }
+
+        return true;
     }
 
     @Override
