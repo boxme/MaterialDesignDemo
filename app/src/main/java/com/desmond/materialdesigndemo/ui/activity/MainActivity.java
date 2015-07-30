@@ -16,8 +16,11 @@ import android.view.animation.OvershootInterpolator;
 import com.desmond.materialdesigndemo.R;
 import com.desmond.materialdesigndemo.ui.Utils;
 import com.desmond.materialdesigndemo.ui.adapter.FeedAdapter;
+import com.desmond.materialdesigndemo.ui.view.FeedContextMenu;
+import com.desmond.materialdesigndemo.ui.view.FeedContextMenuManager;
 
-public class MainActivity extends BaseActivity implements FeedAdapter.OnFeedItemClickListener {
+public class MainActivity extends BaseActivity
+        implements FeedAdapter.OnFeedItemClickListener, FeedContextMenu.OnFeedContextMenuItemClickListener {
 
     public static final String ACTION_SHOW_LOADING_ITEM = "action_show_loading_item";
 
@@ -82,6 +85,12 @@ public class MainActivity extends BaseActivity implements FeedAdapter.OnFeedItem
         mFeedAdapter = new FeedAdapter();
         mFeedAdapter.setOnFeedItemClickListener(this);
         mRvFeed.setAdapter(mFeedAdapter);
+        mRvFeed.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                FeedContextMenuManager.getInstance().onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     @Override
@@ -100,12 +109,32 @@ public class MainActivity extends BaseActivity implements FeedAdapter.OnFeedItem
 
     @Override
     public void onMoreClick(View view, int position) {
-        // TODO
+        FeedContextMenuManager.getInstance().toggleContextMenuFromView(view, position,  this);
     }
 
     @Override
     public void onProfileClick(View view) {
         // TODO
+    }
+
+    @Override
+    public void onReportClick(int feedItem) {
+        FeedContextMenuManager.getInstance().hideContextMenu();
+    }
+
+    @Override
+    public void onSharePhotoClick(int feedItem) {
+        FeedContextMenuManager.getInstance().hideContextMenu();
+    }
+
+    @Override
+    public void onCopyShareUrlClick(int feedItem) {
+        FeedContextMenuManager.getInstance().hideContextMenu();
+    }
+
+    @Override
+    public void onCancelClick(int feedItem) {
+        FeedContextMenuManager.getInstance().hideContextMenu();
     }
 
     private void startIntroAnimation() {

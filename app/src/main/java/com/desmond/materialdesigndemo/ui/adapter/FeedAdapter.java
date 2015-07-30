@@ -39,6 +39,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.btnComments.setOnClickListener(this);
         holder.btnLike.setOnClickListener(this);
         holder.ivFeedCenter.setOnClickListener(this);
+        holder.btnMore.setOnClickListener(this);
         return holder;
     }
 
@@ -78,6 +79,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.btnComments.setTag(position);
         holder.ivFeedCenter.setTag(holder);
         holder.btnLike.setTag(holder);
+        holder.btnMore.setTag(position);
     }
 
     @Override
@@ -107,6 +109,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case R.id.btnLike: {
                 break;
             }
+            case R.id.btnMore: {
+                if (mOnFeedItemClickListener != null) {
+                    mOnFeedItemClickListener.onMoreClick(v, (Integer) v.getTag());
+                }
+                break;
+            }
         }
     }
 
@@ -115,6 +123,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         ImageView ivFeedBottom;
         ImageButton btnComments;
         ImageButton btnLike;
+        ImageButton btnMore;
 
         public CellFeedViewHolder(View view) {
             super(view);
@@ -122,6 +131,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ivFeedBottom = (ImageView) view.findViewById(R.id.ivFeedBottom);
             btnComments = (ImageButton) view.findViewById(R.id.btnComments);
             btnLike = (ImageButton) view.findViewById(R.id.btnLike);
+            btnMore = (ImageButton) view.findViewById(R.id.btnMore);
         }
     }
 }
