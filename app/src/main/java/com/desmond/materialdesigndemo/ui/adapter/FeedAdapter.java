@@ -24,9 +24,7 @@ import com.desmond.materialdesigndemo.R;
 import com.desmond.materialdesigndemo.ui.Utils;
 import com.desmond.materialdesigndemo.ui.view.SquareImageView;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,6 +63,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.btnLike.setOnClickListener(this);
         holder.ivFeedCenter.setOnClickListener(this);
         holder.btnMore.setOnClickListener(this);
+        holder.ivUserProfile.setOnClickListener(this);
         return holder;
     }
 
@@ -167,6 +166,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 updateLikesCounter(holder, true);
                 animatePhotoLike(holder);
                 updateHeartButton(holder, false);
+                break;
+            }
+            case R.id.ivUserProfile: {
+                if (mOnFeedItemClickListener != null) {
+                    mOnFeedItemClickListener.onProfileClick(v);
+                }
                 break;
             }
         }
@@ -340,6 +345,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextSwitcher tsLikesCounter;
         View vBgLike;
         ImageView ivLike;
+        ImageView ivUserProfile;
 
         public CellFeedViewHolder(View view) {
             super(view);
@@ -351,6 +357,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             tsLikesCounter = (TextSwitcher) view.findViewById(R.id.tsLikesCounter);
             vBgLike = view.findViewById(R.id.vBgLike);
             ivLike = (ImageView) view.findViewById(R.id.ivLike);
+            ivUserProfile = (ImageView) view.findViewById(R.id.ivUserProfile);
         }
     }
 }

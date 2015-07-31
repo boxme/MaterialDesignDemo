@@ -95,6 +95,9 @@ public class RevealBackgroundView extends View {
         revealAnimator.start();
     }
 
+    /**
+     * Quickly move to the finished state of the reveal animation
+     */
     public void setToFinishedFrame() {
         changeState(STATE_FINISHED);
         invalidate();

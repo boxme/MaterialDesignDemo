@@ -40,8 +40,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?attr/colorPrimary"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
                     android:orientation="vertical"
                     android:paddingBottom="24dp"
                     android:paddingLeft="24dp"
@@ -53,7 +51,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:clipChildren="false">
+                        android:clipChildren="false"
+                        android:background="@android:color/transparent">
 
                         <ImageView
                             android:id="@+id/ivUserProfilePhoto"
@@ -65,6 +64,7 @@
                             android:id="@+id/vUserDetails"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
@@ -109,14 +109,16 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginTop="16dp">
+                        android:layout_marginTop="16dp"
+                        android:background="@android:color/transparent">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:background="@android:color/transparent">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -137,6 +139,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:background="@android:color/transparent"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -160,6 +163,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
+                            android:background="@android:color/transparent"
                             android:orientation="vertical">
 
                             <TextView
@@ -180,9 +184,24 @@
 
                 </LinearLayout>
 
-                <include
+                <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
-                    layout="@layout/view_feed_toolbar"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:elevation="@dimen/default_elevation"
+                    app:layout_collapseMode="pin"
+                    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+                    <ImageView
+                        android:id="@+id/ivLogo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:scaleType="center"
+                        android:src="@drawable/img_toolbar_logo"/>
+
+                </android.support.v7.widget.Toolbar>
 
             </android.support.design.widget.CollapsingToolbarLayout>
 
