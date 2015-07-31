@@ -109,12 +109,15 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onMoreClick(View view, int position) {
-        FeedContextMenuManager.getInstance().toggleContextMenuFromView(view, position,  this);
+        FeedContextMenuManager.getInstance().toggleContextMenuFromView(view, position, this);
     }
 
     @Override
     public void onProfileClick(View view) {
-        // TODO
+        int[] startingLocation = new int[2];
+        view.getLocationOnScreen(startingLocation);
+        startingLocation[0] += view.getWidth() / 2;
+        UserProfileActivity.startUserProfileFromLocation(startingLocation, MainActivity.this);
     }
 
     @Override

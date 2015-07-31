@@ -23,7 +23,12 @@
         <activity
             android:name=".ui.activity.CommentsActivity"
             android:label="@string/title_activity_comments"
-            android:theme="@style/AppTheme.CommentsActivity">
+            android:theme="@style/AppTheme.TransparentActivity" >
+        </activity>
+        <activity
+            android:name=".ui.activity.UserProfileActivity"
+            android:label="@string/title_activity_user_profile"
+            android:theme="@style/AppTheme.TransparentActivity">
         </activity>
     </application>
 
