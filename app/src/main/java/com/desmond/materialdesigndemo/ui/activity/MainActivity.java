@@ -19,7 +19,7 @@ import com.desmond.materialdesigndemo.ui.adapter.FeedAdapter;
 import com.desmond.materialdesigndemo.ui.view.FeedContextMenu;
 import com.desmond.materialdesigndemo.ui.view.FeedContextMenuManager;
 
-public class MainActivity extends BaseActivity
+public class MainActivity extends BaseDrawerActivity
         implements FeedAdapter.OnFeedItemClickListener, FeedContextMenu.OnFeedContextMenuItemClickListener {
 
     public static final String ACTION_SHOW_LOADING_ITEM = "action_show_loading_item";
@@ -118,6 +118,7 @@ public class MainActivity extends BaseActivity
         view.getLocationOnScreen(startingLocation);
         startingLocation[0] += view.getWidth() / 2;
         UserProfileActivity.startUserProfileFromLocation(startingLocation, MainActivity.this);
+        overridePendingTransition(0, 0);
     }
 
     @Override
