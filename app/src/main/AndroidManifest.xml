@@ -42,7 +42,13 @@
         <activity
             android:name=".ui.activity.UserProfileActivity"
             android:label="@string/title_activity_user_profile"
-            android:theme="@style/AppTheme.TransparentActivity">
+            android:theme="@style/AppTheme.TransparentActivity" >
+        </activity>
+        <activity
+            android:name=".ui.activity.TakePhotoActivity"
+            android:label="@string/title_activity_take_photo"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.TransparentActivity.FullScreen">
         </activity>
     </application>
 

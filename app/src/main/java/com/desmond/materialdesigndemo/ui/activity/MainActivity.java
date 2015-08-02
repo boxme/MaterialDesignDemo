@@ -182,4 +182,12 @@ public class MainActivity extends BaseDrawerActivity
 
         mFeedAdapter.updateItems();
     }
+
+    public void startTakePhoto(View view) {
+        int[] startingLocation = new int[2];
+        view.getLocationOnScreen(startingLocation);
+        startingLocation[0] += view.getWidth() / 2;
+        TakePhotoActivity.startCameraFromLocation(startingLocation, MainActivity.this);
+        overridePendingTransition(0, 0);
+    }
 }
