@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -191,8 +192,8 @@ public class TakePhotoActivity extends BaseActivity
     }
 
     public void onAcceptClick(View view) {
-        // TODO
-//        PublishActivity.openWithPhotoUri(this, Uri.fromFile(mPhotoPath));
+        PublishActivity.openWithPhotoUri(this, Uri.fromFile(mPhotoPath));
+        overridePendingTransition(0, 0);
     }
 
     public void showTakenPhoto(Bitmap bitmap) {

@@ -27,6 +27,8 @@ import com.desmond.materialdesigndemo.R;
  */
 public class SendingProgressView extends View {
 
+    private static final String TAG = SendingProgressView.class.getSimpleName();
+
     public static final int STATE_NOT_STARTED = 0;
     public static final int STATE_PROGRESS_STARTED = 1;
     public static final int STATE_DONE_STARTED = 2;
@@ -189,6 +191,9 @@ public class SendingProgressView extends View {
 
         tempBitmap.recycle();
         resetTempCanvas();
+
+        this.state = state;
+
         if (state == STATE_PROGRESS_STARTED) {
             setCurrentProgress(0);
             simulateProgressAnimator.start();
@@ -207,7 +212,7 @@ public class SendingProgressView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        switch (state) {
+        switch (this.state) {
             case STATE_PROGRESS_STARTED: {
                 drawArcForCurrentProgress();
                 break;

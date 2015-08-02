@@ -5,23 +5,29 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
 
 import com.desmond.materialdesigndemo.R;
 import com.desmond.materialdesigndemo.ui.Utils;
+import com.desmond.materialdesigndemo.ui.view.SendingProgressView;
+import com.desmond.materialdesigndemo.ui.view.SquareFrameLayout;
 import com.desmond.materialdesigndemo.ui.view.SquareImageView;
 
 import java.util.HashMap;
@@ -32,6 +38,9 @@ import java.util.Map;
  */
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements View.OnClickListener, GestureDetector.OnDoubleTapListener {
+
+    private static final int VIEW_TYPE_DEFAULT = 1;
+    private static final int VIEW_TYPE_LOADER = 2;
 
     private static final DecelerateInterpolator DECCELERATE_INTERPOLATOR = new DecelerateInterpolator();
     private static final AccelerateInterpolator ACCELERATE_INTERPOLATOR = new AccelerateInterpolator();
@@ -47,6 +56,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 //    private final List<Integer> mLikedPositions = new ArrayList<>();
     private final SparseBooleanArray mLikedPositions = new SparseBooleanArray();
 
+    private boolean mShowLoadingView = false;
+    private int mLoadingViewSize = Utils.dpToPx(200);
+
     private OnFeedItemClickListener mOnFeedItemClickListener;
 
     public interface OnFeedItemClickListener {
@@ -59,11 +71,33 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_feed, parent, false);
         final CellFeedViewHolder holder = new CellFeedViewHolder(view);
-        holder.btnComments.setOnClickListener(this);
-        holder.btnLike.setOnClickListener(this);
-        holder.ivFeedCenter.setOnClickListener(this);
-        holder.btnMore.setOnClickListener(this);
-        holder.ivUserProfile.setOnClickListener(this);
+        switch (viewType) {
+            case VIEW_TYPE_DEFAULT:{
+                holder.btnComments.setOnClickListener(this);
+                holder.btnLike.setOnClickListener(this);
+                holder.ivFeedCenter.setOnClickListener(this);
+                holder.btnMore.setOnClickListener(this);
+                holder.ivUserProfile.setOnClickListener(this);
+                break;
+            }
+            case VIEW_TYPE_LOADER: {
+                View bgView = new View(parent.getContext());
+                bgView.setLayoutParams(new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                bgView.setBackgroundColor(0x77ffffff);
+                holder.vImageRoot.addView(bgView);
+                holder.mVProgressBg = bgView;
+
+                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(mLoadingViewSize, mLoadingViewSize);
+                params.gravity = Gravity.CENTER;
+                SendingProgressView sendingProgressView = new SendingProgressView(parent.getContext());
+                sendingProgressView.setLayoutParams(params);
+                holder.vImageRoot.addView(sendingProgressView);
+                holder.mVSendingProgress = sendingProgressView;
+                break;
+            }
+        }
+
         return holder;
     }
 
@@ -72,7 +106,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         runEnterAnimation(viewHolder.itemView, position);
 
         CellFeedViewHolder holder = (CellFeedViewHolder) viewHolder;
-        bindDefaultFeedItem(position, holder);
+        if (getItemViewType(position) == VIEW_TYPE_DEFAULT) {
+            bindDefaultFeedItem(position, holder);
+        } else if (getItemViewType(position) == VIEW_TYPE_LOADER) {
+            bindLoadingFeedItem(holder);
+        }
     }
 
     private void runEnterAnimation(View view, int position) {
@@ -114,9 +152,51 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         resetLikeAnimationState(holder);
     }
 
+    private void bindLoadingFeedItem(final CellFeedViewHolder holder) {
+        holder.ivFeedCenter.setImageResource(R.drawable.img_feed_center_1);
+        holder.ivFeedBottom.setImageResource(R.drawable.img_feed_bottom_1);
+
+        holder.mVSendingProgress.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                holder.mVSendingProgress.getViewTreeObserver().removeOnPreDrawListener(this);
+                holder.mVSendingProgress.setScaleX(1F);
+                holder.mVSendingProgress.setScaleY(1F);
+                holder.mVProgressBg.setAlpha(1F);
+                holder.mVSendingProgress.simulateProgress();
+                return true;
+            }
+        });
+        holder.mVSendingProgress.setOnLoadingFinishedListener(new SendingProgressView.OnLoadingFinishedListener() {
+            @Override
+            public void onLoadingFinished() {
+                ViewCompat.animate(holder.mVSendingProgress)
+                        .scaleY(0).scaleX(0).setDuration(200).setStartDelay(100);
+                ViewCompat.animate(holder.mVProgressBg)
+                        .alpha(0.1F).setDuration(200).setStartDelay(100)
+                        .setListener(new ViewPropertyAnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(View view) {
+                                mShowLoadingView = false;
+                                notifyItemChanged(0);
+                            }
+                        });
+            }
+        });
+    }
+
     @Override
     public int getItemCount() {
         return mItemsCount;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mShowLoadingView && position == 0) {
+            return VIEW_TYPE_LOADER;
+        } else {
+            return VIEW_TYPE_DEFAULT;
+        }
     }
 
     public void updateItems() {
@@ -336,6 +416,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    public void showLoadingView() {
+        mShowLoadingView = true;
+        notifyItemChanged(0);
+    }
+
     public static class CellFeedViewHolder extends RecyclerView.ViewHolder {
         SquareImageView ivFeedCenter;
         ImageView ivFeedBottom;
@@ -346,6 +431,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         View vBgLike;
         ImageView ivLike;
         ImageView ivUserProfile;
+
+        SquareFrameLayout vImageRoot;
+        SendingProgressView mVSendingProgress;
+        View mVProgressBg;
 
         public CellFeedViewHolder(View view) {
             super(view);
@@ -358,6 +447,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             vBgLike = view.findViewById(R.id.vBgLike);
             ivLike = (ImageView) view.findViewById(R.id.ivLike);
             ivUserProfile = (ImageView) view.findViewById(R.id.ivUserProfile);
+            vImageRoot = (SquareFrameLayout) view.findViewById(R.id.vImageRoot);
         }
     }
 }
