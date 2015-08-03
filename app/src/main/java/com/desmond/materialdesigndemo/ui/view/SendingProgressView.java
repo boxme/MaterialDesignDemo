@@ -243,11 +243,6 @@ public class SendingProgressView extends View {
     }
 
     private void drawFrameForDoneAnimation() {
-        // Draw the masked bitmap on the tempCanvas
-        tempCanvas.drawBitmap(innerCircleMaskBitmap, 0, 0, maskPaint);
-
-        // Draw the progress arc
-        tempCanvas.drawArc(progressBounds, 0, 360F, false, progressPaint);
 
         // Draw the green part
         tempCanvas.drawCircle(
@@ -258,6 +253,14 @@ public class SendingProgressView extends View {
         tempCanvas.drawBitmap(
                 checkmarkBitmap, checkmarkXPosition,
                 checkmarkYPosition + currentCheckmarkOffset, checkmarkPaint);
+
+        // Draw the masked bitmap on the tempCanvas
+        tempCanvas.drawBitmap(innerCircleMaskBitmap, 0, 0, maskPaint);
+
+        // Draw the progress arc
+        // Draw this after the masking, otherwise the arc will not be shown
+        // as it is outside of the innerCicleMaskBitmap
+        tempCanvas.drawArc(progressBounds, 0, 360F, false, progressPaint);
     }
 
     private void drawFinishedState() {

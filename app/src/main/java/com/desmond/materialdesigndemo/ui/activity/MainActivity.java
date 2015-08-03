@@ -204,10 +204,12 @@ public class MainActivity extends BaseDrawerActivity
     }
 
     public void startTakePhoto(View view) {
-        int[] startingLocation = new int[2];
-        view.getLocationOnScreen(startingLocation);
-        startingLocation[0] += view.getWidth() / 2;
-        TakePhotoActivity.startCameraFromLocation(startingLocation, MainActivity.this);
-        overridePendingTransition(0, 0);
+//        int[] startingLocation = new int[2];
+//        view.getLocationOnScreen(startingLocation);
+//        startingLocation[0] += view.getWidth() / 2;
+//        TakePhotoActivity.startCameraFromLocation(startingLocation, MainActivity.this);
+//        overridePendingTransition(0, 0);
+        mRvFeed.scrollToPosition(0);
+        mFeedAdapter.showLoadingView();
     }
 }
