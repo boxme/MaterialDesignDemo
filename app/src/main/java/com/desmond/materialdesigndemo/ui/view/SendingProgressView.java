@@ -194,18 +194,25 @@ public class SendingProgressView extends View {
 
         this.state = state;
 
-        if (state == STATE_PROGRESS_STARTED) {
-            setCurrentProgress(0);
-            simulateProgressAnimator.start();
-        } else if (state == STATE_DONE_STARTED) {
-            setCurrentDoneBgOffset(MAX_DONE_BG_OFFSET);
-            setCurrentCheckmarkOffset(MAX_DONE_IMG_OFFSET);
-            AnimatorSet animatorSet = new AnimatorSet();
-            animatorSet.playSequentially(doneBgAnimator, checkmarkAnimator);
-            animatorSet.start();
-        } else if (state == STATE_FINISHED) {
-            if (onLoadingFinishedListener != null) {
-                onLoadingFinishedListener.onLoadingFinished();
+        switch (state) {
+            case STATE_PROGRESS_STARTED: {
+                setCurrentProgress(0);
+                simulateProgressAnimator.start();
+                break;
+            }
+            case STATE_DONE_STARTED: {
+                setCurrentDoneBgOffset(MAX_DONE_BG_OFFSET);
+                setCurrentCheckmarkOffset(MAX_DONE_IMG_OFFSET);
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.playSequentially(doneBgAnimator, checkmarkAnimator);
+                animatorSet.start();
+                break;
+            }
+            case STATE_FINISHED: {
+                if (onLoadingFinishedListener != null) {
+                    onLoadingFinishedListener.onLoadingFinished();
+                }
+                break;
             }
         }
     }
@@ -236,6 +243,12 @@ public class SendingProgressView extends View {
     }
 
     private void drawFrameForDoneAnimation() {
+        // Draw the masked bitmap on the tempCanvas
+        tempCanvas.drawBitmap(innerCircleMaskBitmap, 0, 0, maskPaint);
+
+        // Draw the progress arc
+        tempCanvas.drawArc(progressBounds, 0, 360F, false, progressPaint);
+
         // Draw the green part
         tempCanvas.drawCircle(
                 getWidth() / 2, getWidth() / 2 + currentDoneBgOffset,
@@ -245,12 +258,6 @@ public class SendingProgressView extends View {
         tempCanvas.drawBitmap(
                 checkmarkBitmap, checkmarkXPosition,
                 checkmarkYPosition + currentCheckmarkOffset, checkmarkPaint);
-
-        // Draw the masked bitmap on the tempCanvas
-        tempCanvas.drawBitmap(innerCircleMaskBitmap, 0, 0, maskPaint);
-
-        // Draw the progress arc
-        tempCanvas.drawArc(progressBounds, 0, 360F, false, progressPaint);
     }
 
     private void drawFinishedState() {

@@ -49,7 +49,8 @@ public class MainActivity extends BaseDrawerActivity
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mRvFeed.smoothScrollToPosition(0);
+//                mRvFeed.smoothScrollToPosition(0);
+                mRvFeed.scrollToPosition(0);
                 mFeedAdapter.showLoadingView();
             }
         }, 500);
