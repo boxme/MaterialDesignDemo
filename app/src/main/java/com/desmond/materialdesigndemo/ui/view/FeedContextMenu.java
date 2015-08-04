@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,22 @@ public class FeedContextMenu extends LinearLayout {
         setOrientation(VERTICAL);
         setBackgroundResource(R.drawable.bg_container_shadow);
         setLayoutParams(new LayoutParams(CONTEXT_MENU_WIDTH, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+
+    /**
+     * Manually inflate a layout, this callback is not called.
+     * Instantiating using 'new CustomView(context)' will naturally mean it has no children
+     * & hence it does not have to wait for them to be instantiated in the recursive fashion, as in XML inflation.
+     */
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+//        LayoutInflater.from(getContext()).inflate(R.layout.view_context_menu, this, true);
+//        setOrientation(VERTICAL);
+//        setBackgroundResource(R.drawable.bg_container_shadow);
+//        setLayoutParams(new LayoutParams(CONTEXT_MENU_WIDTH, ViewGroup.LayoutParams.WRAP_CONTENT));
+//
+//        setClickListener();
     }
 
     @Override
